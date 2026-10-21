@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="Joy Manalu Vision AI Studio - Sistem Pengenalan Wajah Real-Time Berbasis DeepFace Facenet512">
+    <title>Joy Manalu AI • Face Recognition Studio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Bespoke Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=7.0">
+</head>
+<body>
+    <!-- Cybernetic Ambient Background & Glow -->
+    <div class="ambient-glow top-left" aria-hidden="true"></div>
+    <div class="ambient-glow bottom-right" aria-hidden="true"></div>
+    <div class="cyber-grid-overlay" aria-hidden="true"></div>
+
+    <!-- Main Application Shell -->
+    <div class="app-shell">
+        
+        <!-- Top Navigation Dock -->
+        <header class="app-header" id="navbar">
+            <div class="header-inner">
+                <!-- Brand Identity -->
+                <div class="header-brand">
+                    <div class="brand-badge-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div class="brand-titles">
+                        <div class="brand-main">JOY MANALU <span class="brand-accent">STUDIO</span></div>
+                        <div class="brand-sub">FACIAL RECOGNITION AI • 512D ENGINE</div>
+                    </div>
+                </div>
+
+                <!-- Center Mode Segmented Control -->
+                <div class="mode-segmented-control" role="tablist">
+                    <button class="mode-tab-btn active" id="btnWebcam" onclick="switchMode('webcam')" role="tab" aria-selected="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 7l-7 5 7 5V7z"/>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                        </svg>
+                        <span>Live Kamera</span>
+                    </button>
+                    <button class="mode-tab-btn" id="btnUpload" onclick="switchMode('upload')" role="tab" aria-selected="false">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <span>Scan Foto</span>
+                    </button>
+                </div>
+
+                <!-- Right Quick Telemetry & Mobile Connect Button -->
+                <div class="header-actions">
+                    <!-- Mobile Connect Action Button -->
+                    <button class="btn-mobile-connect" id="btnOpenMobileModal" onclick="openMobileModal()" title="Buka aplikasi ini di HP / Smartphone">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                            <line x1="12" y1="18" x2="12.01" y2="18"/>
+                        </svg>
+                        <span>Buka di HP</span>
+                    </button>
+
+                    <div class="vault-pill" title="Jumlah profil wajah terdaftar dalam model AI">
+                        <span class="vault-icon">👥</span>
+                        <span class="vault-count" id="statPersons">22</span>
+                        <span class="vault-label">Identitas</span>
+                    </div>
+
+                    <div class="server-status-pill" id="navStatus" title="Status Server Backend (Klik untuk konfigurasi URL)" onclick="configureServerUrl()">
+                        <span class="status-dot offline"></span>
+                        <span class="status-text">Menghubungkan...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Studio Cockpit Workspace -->
+        <main class="studio-workspace">
+            
+            <!-- Quick Feature Overview Strip -->
+            <section class="studio-subbar">
+                <div class="subbar-tag">
+                    <span class="tag-sparkle">✨</span>
+                    <span>DeepFace Facenet512 &bull; KNN Top-3 Vector Search &bull; Multi-Device Support (Laptop, Web &amp; HP)</span>
+                </div>
+                <div class="subbar-metrics">
+                    <span class="metric-chip">⚡ Akurasi <strong>97%</strong></span>
+                    <span class="metric-chip">🎯 Cosine Cutoff <strong>0.38</strong></span>
+                    <span class="metric-chip">👑 Owner <strong>Joy Manalu</strong></span>
+                </div>
+            </section>
+
+            <!-- Insecure Context Warning for HP / Mobile Users -->
+            <div class="https-warning-banner hidden" id="httpsWarningBanner">
+                <div class="warning-icon">⚠️</div>
+                <div class="warning-content">
+                    <strong>Pemberitahuan Kamera HP (WebRTC):</strong> Browser HP membutuhkan koneksi aman (HTTPS) untuk mengaktifkan video kamera live secara langsung. 
+                    Anda tetap bisa menggunakan tombol <strong>"Scan Foto"</strong> yang bekerja 100% di semua HP, atau aktifkan tunnel HTTPS gratis via Cloudflare/Ngrok.
+                </div>
+                <button class="btn-warning-action" onclick="openMobileModal()">Lihat Solusi HP</button>
+            </div>
+
+            <!-- Grid: Left Viewport + Right Inspector -->
+            <div class="studio-grid">
+                
+                <!-- Viewport Column (Camera / Upload) -->
+                <section class="viewport-card">
+                    <!-- Viewport Top Bar -->
+                    <div class="viewport-header">
+                        <div class="viewport-title-group">
+                            <span class="view-indicator-pulse"></span>
+                            <h2 class="viewport-title" id="panelTitle">Kamera AI</h2>
+                            <span class="view-badge">REAL-TIME 512D</span>
+                        </div>
+                        
+                        <div class="viewport-controls" id="webcamControls">
+                            <!-- Mobile Camera Switch (Front/Back) -->
+                            <button class="btn-action-secondary" id="btnFlipCam" onclick="toggleCameraFacing()" title="Ganti Kamera Depan / Belakang (Khusus HP)">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 1.956.702 3.748 1.87 5.143L4 17h5v-5L7.26 13.74C6.48 12.65 6 11.38 6 10c0-3.314 2.686-6 6-6s6 2.686 6 6c0 1.636-.656 3.12-1.72 4.21l1.42 1.42C19.23 14.12 20 12.16 20 10z"/>
+                                </svg>
+                                <span class="hide-on-mobile-sm">Ganti Kamera</span>
+                            </button>
+
+                            <button class="btn-action-primary" id="btnStartCam" onclick="startWebcam()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                <span>Mulai Kamera</span>
+                            </button>
+                            <button class="btn-action-danger hidden" id="btnStopCam" onclick="stopWebcam()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="6" y="6" width="12" height="12" rx="2"/>
+                                </svg>
+                                <span>Hentikan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Video Viewport Frame with Cyber Reticles -->
+                    <div class="viewport-canvas-container" id="videoContainer">
+                        
+                        <!-- High-Tech Corner Reticles -->
+                        <div class="corner-reticle top-left"></div>
+                        <div class="corner-reticle top-right"></div>
+                        <div class="corner-reticle bottom-left"></div>
+                        <div class="corner-reticle bottom-right"></div>
+
+                        <!-- Webcam View -->
+                        <div class="webcam-wrapper" id="webcamWrapper">
+                            <video id="webcamVideo" autoplay playsinline muted></video>
+                            <canvas id="overlayCanvas"></canvas>
+                            <div class="scan-line" id="scanLine"></div>
+                            
+                            <!-- Idle Placeholder -->
+                            <div class="video-placeholder" id="videoPlaceholder">
+                                <div class="placeholder-aperture">
+                                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                                    </svg>
+                                </div>
+                                <h3 class="placeholder-heading">Kamera Siap Diaktifkan</h3>
+                                <p class="placeholder-desc">Klik tombol <strong>"Mulai Kamera"</strong> untuk mendeteksi &amp; mengenali wajah Joy Manalu serta seluruh identitas secara real-time.</p>
+                                <button class="btn-placeholder-launch" onclick="startWebcam()">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                    <span>Aktifkan Sekarang</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Upload Photo View -->
+                        <div class="upload-wrapper hidden" id="uploadWrapper">
+                            <div class="upload-dropzone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+                                <!-- fileInput supports direct camera roll & capture on HP -->
+                                <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFileUpload(event)" hidden>
+                                <div class="dropzone-circle">
+                                    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17 8 12 3 7 8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                </div>
+                                <h3 class="dropzone-title">Ambil / Upload Foto Wajah</h3>
+                                <p class="dropzone-subtitle">Klik untuk memilih dari galeri atau potret langsung via kamera HP</p>
+                                <span class="dropzone-pill">Bekerja di Semua HP, Laptop &amp; Web &bull; JPG, PNG</span>
+                            </div>
+                            
+                            <div class="uploaded-preview hidden" id="uploadedPreview">
+                                <img id="uploadedImage" src="" alt="Uploaded Face">
+                                <canvas id="uploadOverlayCanvas"></canvas>
+                                <button class="btn-preview-close" onclick="removeUpload()" title="Hapus foto">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Viewport Footer HUD Bar -->
+                    <div class="viewport-hud-footer">
+                        <div class="hud-item">
+                            <span class="hud-dot"></span>
+                            <span class="hud-label">Deteksi:</span>
+                            <span class="hud-val">Aktif</span>
+                        </div>
+                        <div class="hud-item">
+                            <span class="hud-label">Model:</span>
+                            <span class="hud-val">Facenet512</span>
+                        </div>
+                        <div class="hud-item">
+                            <span class="hud-label">Kamera:</span>
+                            <span class="hud-val" id="camFacingLabel">Depan (Selfie)</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sisi Kamera: Dua Kartu Pendaftaran & Wajah Terdaftar (Lebar ~340px di laptop) -->
+                <aside class="sidebar-cards-col">
+                    
+                    <!-- KARTU 1: "Daftarkan wajah" -->
+                    <div class="panel-card register-card">
+                        <div class="panel-card-header">
+                            <div class="panel-card-title-group">
+                                <!-- Ikon Orang + Plus -->
+                                <svg class="panel-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="8.5" cy="7" r="4"/>
+                                    <line x1="20" y1="8" x2="20" y2="14"/>
+                                    <line x1="17" y1="11" x2="23" y2="11"/>
+                                </svg>
+                                <h3 class="panel-card-title">Daftarkan wajah</h3>
+                            </div>
+                        </div>
+
+                        <!-- Form Input Pendaftaran -->
+                        <div class="register-form">
+                            <!-- Kolom input nama -->
+                            <div class="input-group">
+                                <input type="text" id="regNameInput" class="custom-neon-input" placeholder="Nama, mis. Joy Manalu" autocomplete="off">
+                            </div>
+
+                            <!-- Dua tombol sebaris: "Rekam" (hijau neon, utama) dan "Pilih foto" (gelap) -->
+                            <div class="btn-row-dual">
+                                <button type="button" class="btn-neon-primary" id="btnRecordFace" onclick="triggerRecordFace()" title="Rekam wajah dari kamera langsung">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="7"/>
+                                    </svg>
+                                    <span>Rekam</span>
+                                </button>
+                                <button type="button" class="btn-dark-subtle" id="btnPickPhoto" onclick="document.getElementById('regFileInput').click()" title="Pilih file foto dari perangkat">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21 15 16 10 5 21"/>
+                                    </svg>
+                                    <span>Pilih foto</span>
+                                </button>
+                                <input type="file" id="regFileInput" accept="image/*" multiple onchange="handleRegisterFiles(event)" hidden>
+                            </div>
+
+                            <!-- Satu tombol lebar di bawahnya: "Pilih folder (banyak orang)" -->
+                            <button type="button" class="btn-full-dark" id="btnPickFolder" onclick="openFolderPicker()" title="Upload folder berisi sub-folder per nama orang">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                <span>Pilih folder (banyak orang)</span>
+                            </button>
+                            <input type="file" id="regFolderInput" webkitdirectory directory mozdirectory multiple onchange="handleRegisterFolder(event)" hidden>
+
+                            <!-- Teks tips kecil persis sesuai permintaan -->
+                            <p class="register-tips-text">
+                                Tips: daftar satu orang sekali waktu, cahaya terang dari depan, tanpa masker. Semakin banyak sampel, semakin akurat.
+                            </p>
+
+                            <!-- Mini Status Banner / Notif -->
+                            <div class="reg-feedback hidden" id="regFeedback"></div>
+                        </div>
+                    </div>
+
+                    <!-- KARTU 2: "Wajah terdaftar" -->
+                    <div class="panel-card registered-card">
+                        <div class="panel-card-header-between">
+                            <div class="panel-card-title-group">
+                                <svg class="panel-icon-svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                                <h3 class="panel-card-title">Wajah terdaftar</h3>
+                            </div>
+                            <span class="registered-counter-tag" id="registeredCounter">22 orang</span>
+                        </div>
+
+                        <!-- Tombol kecil "Kalibrasi" di bawah judul -->
+                        <div class="calibration-row">
+                            <button type="button" class="btn-calibrate-small" id="btnCalibrate" onclick="triggerCalibrateThreshold()" title="Hitung ulang ambang kecocokan optimal dari semua sampel">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path d="M12 20v-6M6 20V10M18 20V4"/>
+                                </svg>
+                                <span>Kalibrasi</span>
+                            </button>
+                            <span class="calibration-status-txt" id="calibStatusTxt"></span>
+                        </div>
+
+                        <!-- Daftar orang, satu baris per orang (scrollable jika panjang) -->
+                        <div class="registered-persons-list" id="registeredPersonsList">
+                            <div class="list-empty-msg">Memuat data wajah...</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Recognition Mini HUD (Tetap menampilkan status wajah di frame kamera) -->
+                    <div class="live-detection-compact-hud">
+                        <div class="compact-hud-head">
+                            <span class="hud-pulse-dot"></span>
+                            <span class="hud-stream-label">Deteksi Real-Time:</span>
+                            <span class="hud-face-tally" id="faceCount">0 wajah</span>
+                        </div>
+                        <div class="results-container compact-stream" id="resultsList">
+                            <div class="empty-state-compact">Kamera standby</div>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+
+            <!-- Identity Vault Section (Daftar Profil Terdaftar) -->
+            <section class="vault-section">
+                <div class="vault-header-row">
+                    <div class="vault-title-group">
+                        <div class="vault-badge-icon">🗂️</div>
+                        <div>
+                            <h3 class="vault-title">Database Profil Terverifikasi</h3>
+                            <p class="vault-subtitle">Identitas tersimpan dalam model Facenet-512 dengan representasi vektor terdistribusi</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Input for Filter -->
+                    <div class="vault-search-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" id="vaultSearchInput" placeholder="Cari nama identitas..." oninput="filterPersonsList(this.value)">
+                    </div>
+                </div>
+
+                <div class="vault-grid" id="personsGrid">
+                    <div class="loading-state">Memuat database identitas...</div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Studio Footer -->
+        <footer class="app-footer">
+            <div class="footer-inner">
+                <div class="footer-left">
+                    <span class="footer-brand">Joy Manalu AI Studio &bull; Face Recognition System</span>
+                    <span class="footer-edition">Cyber Luxe Edition &copy; 2026</span>
+                </div>
+                <div class="footer-right">
+                    <span class="tech-tag">Facenet-512</span>
+                    <span class="tech-tag">KNN Cosine</span>
+                    <span class="tech-tag">Web &bull; Laptop &bull; HP</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ──────────────── Modal: Buka di HP (Mobile Connect) ──────────────── -->
+    <div class="modal-backdrop hidden" id="mobileModal" onclick="closeMobileModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon">📱</div>
+                    <div>
+                        <h3 class="modal-title">Buka di HP / Smartphone</h3>
+                        <p class="modal-subtitle">Akses aplikasi Joy Manalu AI langsung dari handphone Anda</p>
+                    </div>
+                </div>
+                <button class="modal-close-btn" onclick="closeMobileModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- QR Code Display Area -->
+                <div class="qr-showcase">
+                    <div class="qr-frame">
+                        <canvas id="qrCanvas" width="180" height="180"></canvas>
+                    </div>
+                    <p class="qr-instruction">Scan QR Code ini menggunakan kamera HP Anda</p>
+                </div>
+
+                <!-- Local Wi-Fi Access Box -->
+                <div class="connection-box">
+                    <div class="connection-label">Alamat URL Wi-Fi Lokal (Laptop &amp; HP satu jaringan):</div>
+                    <div class="connection-input-row">
+                        <input type="text" id="mobileUrlInput" readonly value="http://localhost:5000">
+                        <button class="btn-copy" onclick="copyMobileUrl()">Salin URL</button>
+                    </div>
+                </div>
+
+                <!-- Mobile Practical Guide Tabs -->
+                <div class="guide-box">
+                    <h4 class="guide-heading">💡 Panduan Membuka di HP:</h4>
+                    <ul class="guide-list">
+                        <li>
+                            <strong>Metode 1 (Paling Mudah):</strong> Buka URL di atas melalui browser Chrome/Safari di HP Anda. Gunakan tab <strong>"Scan Foto"</strong> untuk langsung memotret wajah dari kamera HP atau memilih foto dari galeri.
+                        </li>
+                        <li>
+                            <strong>Metode 2 (Live Webcam di HP via Cloudflare HTTPS Tunnel):</strong>
+                            Browser HP membatasi live webcam jika tanpa HTTPS. Jalankan tunnel HTTPS gratis (1 klik tanpa daftar):
+                            <div class="code-snippet">cloudflared tunnel --url http://localhost:5000</div>
+                            Buka URL <code>https://xxx.trycloudflare.com</code> di HP, maka live kamera WebRTC langsung aktif sempurna!
+                        </li>
+                        <li>
+                            <strong>Metode 3 (Publikasi Online ke Web):</strong>
+                            Upload project ini ke <strong>Render.com</strong>, <strong>Railway</strong>, atau <strong>Hugging Face Spaces</strong> (file <code>Procfile</code> dan <code>requirements.txt</code> sudah siap), dan aplikasi bisa dibuka oleh siapa saja dari mana saja di seluruh dunia!
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-modal-primary" onclick="closeMobileModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js?v=6.0"></script>
+    <script src="app.js?v=7.0"></script>
+</body>
+</html>

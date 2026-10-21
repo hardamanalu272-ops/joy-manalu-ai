@@ -1,0 +1,20 @@
+# ========================================================
+# Joy Manalu AI Studio - Netlify Configuration
+# ========================================================
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    # Memberikan izin kamera untuk WebRTC di browser HP dan Laptop
+    Permissions-Policy = "camera=(self), microphone=()"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

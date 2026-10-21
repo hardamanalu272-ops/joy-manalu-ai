@@ -1,0 +1,45 @@
+# ============================================
+# Joy Manalu AI Studio - .gitignore
+# ============================================
+
+# Python virtual environment (besar, tidak perlu diupload)
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# Dataset foto wajah asli (JANGAN upload foto orang ke internet / public repo!)
+dataset/
+dataset/**
+*.jpg
+*.jpeg
+*.png
+
+# Database & Vektor Biometrik Wajah (JANGAN masukkan data wajah ke repository publik!)
+*.pkl
+*.pkl.bak
+embeddings_cache.pkl
+embeddings_cache.pkl.bak
+
+# File sementara, log, & cache lokal
+*.log
+*.tmp
+tunnel_fresh.log
+
+# Cloudflared binary & executable lokal (besar, tidak perlu di git)
+cloudflared.exe
+*.exe
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# SERTAKAN file model detektor umum (Bukan data wajah pribadi, ini model deteksi standar open-source):
+!face_detection_yunet_2023mar.onnx
+!haarcascade_frontalface_default.xml
+

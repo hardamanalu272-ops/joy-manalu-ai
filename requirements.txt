@@ -1,0 +1,17 @@
+# ============================================
+# Joy Manalu AI Studio - Requirements
+# Face Recognition & Web Telemetry Server
+# ============================================
+
+# Backend Web Server
+flask>=3.0.0
+flask-cors>=4.0.0
+gunicorn>=21.0.0
+
+# Computer Vision & Deep Learning Face Recognition
+deepface>=0.0.90
+opencv-contrib-python-headless
+onnxruntime>=1.16.0
+Pillow>=10.0.0
+numpy>=1.24.0
+tqdm>=4.66.0
