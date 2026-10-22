@@ -1,6 +1,8 @@
 # Joy Manalu AI Studio 🎯
 Sistem Pengenalan & Deteksi Multi-Wajah Real-Time Berbasis AI Deep Learning (Facenet-512 & YuNet SOTA).
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hardamanalu272-ops/joy-manalu-ai)
+
 ---
 
 ## 🌟 Fitur Utama
